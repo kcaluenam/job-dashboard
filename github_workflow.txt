@@ -1,0 +1,49 @@
+name: Update Job Dashboard
+
+on:
+  schedule:
+    # Runs at 7 AM EST (12:00 UTC) every day
+    - cron: '0 12 * * *'
+  workflow_dispatch: # Manual trigger button
+  push:
+    branches: [ main ] # Also run on push for testing
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Full history for proper commits
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      
+      - name: Run job scraper
+        run: python main.py
+      
+      - name: Commit and push changes
+        run: |
+          git config --local user.name "JobBot"
+          git config --local user.email "jobbot@users.noreply.github.com"
+          git add jobs_db.json index.html
+          
+          # Only commit if there are changes
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "🔄 Daily job update - $(date +'%Y-%m-%d %H:%M')"
+            git push
+          fi
