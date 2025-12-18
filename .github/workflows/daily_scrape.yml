@@ -1,0 +1,38 @@
+name: Update Job Dashboard
+
+on:
+  schedule:
+    # This runs at 12:00 UTC every day
+    # (Which is 7:00 AM EST / 8:00 AM EDT)
+    - cron: '0 12 * * *'
+  
+  # This allows you to click a button to run it manually whenever you want
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # <--- CRITICAL: This allows the bot to save the DB
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          
+      - name: Install libraries
+        run: pip install requests beautifulsoup4
+        
+      - name: Run Scraper
+        run: python main.py
+        
+      - name: Save Results
+        run: |
+          git config --global user.name "JobBot"
+          git config --global user.email "bot@gmail.com"
+          git add jobs_db.json index.html
+          git commit -m "Daily Job Update" || echo "No changes to commit"
+          git push
