@@ -9,7 +9,6 @@ import time
 TARGETS = [
     {"name": "Datadog", "url": "https://boards.greenhouse.io/datadog", "type": "greenhouse"},
     {"name": "Anduril", "url": "https://boards.greenhouse.io/andurilindustries", "type": "greenhouse"},
-    {"name": "Palantir", "url": "https://jobs.lever.co/palantir", "type": "lever"},
     {"name": "Linear", "url": "https://jobs.ashbyhq.com/linear", "type": "ashby"},
     {"name": "Rippling", "url": "https://jobs.ashbyhq.com/rippling", "type": "ashby"},
     {"name": "Vannevar Labs", "url": "https://jobs.ashbyhq.com/vannevarlabs", "type": "ashby"},
